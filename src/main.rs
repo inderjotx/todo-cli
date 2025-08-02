@@ -1,6 +1,12 @@
 use std::io;
+
+#[derive(PartialEq)]
+enum Status {
+    Pending,
+    Completed,
+}
 struct Todo {
-    status: bool,
+    status: Status,
     task: String,
 }
 
@@ -18,7 +24,7 @@ impl TodoManager {
     }
 
     fn mark_done(self: &mut Self, index: usize) {
-        self.todos[index].status = true;
+        self.todos[index].status = Status::Completed;
     }
 
     fn list_all(self: &Self) -> &Vec<Todo> {
@@ -26,10 +32,16 @@ impl TodoManager {
     }
 
     fn list_done(&self) -> Vec<&Todo> {
-        self.todos.iter().filter(|n| n.status == true).collect()
+        self.todos
+            .iter()
+            .filter(|n| n.status == Status::Completed)
+            .collect()
     }
     fn list_no_done(&self) -> Vec<&Todo> {
-        self.todos.iter().filter(|n| n.status == false).collect()
+        self.todos
+            .iter()
+            .filter(|n| n.status == Status::Pending)
+            .collect()
     }
 }
 
@@ -68,7 +80,7 @@ fn add_todo(manager: &mut TodoManager) {
         .expect("Error reading contnet of new todo");
 
     manager.add_todo(Todo {
-        status: false,
+        status: Status::Pending,
         task: message,
     });
 }
@@ -110,8 +122,8 @@ fn list_todo(manager: &TodoManager) {
 
     for todo in todos {
         match todo.status {
-            true => println!("✅ - {}", todo.task),
-            false => println!("❌ - {}", todo.task),
+            Status::Completed => println!("✅ - {}", todo.task),
+            Status::Pending => println!("❌ - {}", todo.task),
         }
     }
 }
@@ -121,8 +133,8 @@ fn list_done(manager: &TodoManager) {
 
     for todo in todos {
         match todo.status {
-            true => println!("✅ - {}", todo.task),
-            false => println!("❌ - {}", todo.task),
+            Status::Completed => println!("✅ - {}", todo.task),
+            Status::Pending => println!("❌ - {}", todo.task),
         }
     }
 }
@@ -132,8 +144,8 @@ fn list_not_done(manager: &TodoManager) {
 
     for todo in todos {
         match todo.status {
-            true => println!("✅ - {}", todo.task),
-            false => println!("❌ - {}", todo.task),
+            Status::Completed => println!("✅ - {}", todo.task),
+            Status::Pending => println!("❌ - {}", todo.task),
         }
     }
 }
